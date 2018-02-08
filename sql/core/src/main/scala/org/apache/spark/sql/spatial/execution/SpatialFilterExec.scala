@@ -37,8 +37,8 @@ case class SpatialFilterExec(condition: Expression, child: SparkPlan) extends Sp
         val _target = target.asInstanceOf[Literal].value.asInstanceOf[Point]
         val _k = k.value.asInstanceOf[Number].intValue()
         knn(root_rdd, point, _target, _k)
-      //case _ =>
-        //root_rdd.mapPartitions(iter => iter.filter(newPredicate(condition, child.output)))
+      case _ =>
+        root_rdd.mapPartitions(iter => iter.filter(newPredicate(condition, child.output).eval(_)))
     }
   }
 
