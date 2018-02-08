@@ -23,9 +23,7 @@ import scala.collection.JavaConverters._
 import scala.language.implicitConversions
 import scala.reflect.runtime.universe.TypeTag
 import scala.util.control.NonFatal
-
 import org.apache.commons.lang3.StringUtils
-
 import org.apache.spark.annotation.{DeveloperApi, Experimental, InterfaceStability}
 import org.apache.spark.api.java.JavaRDD
 import org.apache.spark.api.java.function._
@@ -42,6 +40,7 @@ import org.apache.spark.sql.catalyst.optimizer.CombineUnions
 import org.apache.spark.sql.catalyst.plans._
 import org.apache.spark.sql.catalyst.plans.logical._
 import org.apache.spark.sql.catalyst.plans.physical.{Partitioning, PartitioningCollection}
+import org.apache.spark.sql.catalyst.spatial.ShapeType
 import org.apache.spark.sql.catalyst.util.usePrettyExpression
 import org.apache.spark.sql.execution.{FileRelation, LogicalRDD, QueryExecution, SQLExecution}
 import org.apache.spark.sql.execution.command.{CreateViewCommand, ExplainCommand, GlobalTempView, LocalTempView}
@@ -52,6 +51,8 @@ import org.apache.spark.sql.types._
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.unsafe.types.CalendarInterval
 import org.apache.spark.util.Utils
+import org.apache.spark.sql.catalyst.spatial.expressions.{ExpKNN, PointWrapper}
+import org.apache.spark.sql.catalyst.spatial.shapes.Point
 
 private[sql] object Dataset {
   def apply[T: Encoder](sparkSession: SparkSession, logicalPlan: LogicalPlan): Dataset[T] = {
@@ -225,6 +226,28 @@ class Dataset[T] private[sql](
     schema.fields.filter(_.dataType.isInstanceOf[NumericType]).map { n =>
       queryExecution.analyzed.resolveQuoted(n.name, sparkSession.sessionState.analyzer.resolver).get
     }
+  }
+
+
+  private def getAttributes(keys: Array[String], attrs: Seq[Attribute] = this.queryExecution.analyzed.output): Array[Attribute] = {
+    keys.map(key => {
+      val temp = attrs.indexWhere(_.name == key)
+      if (temp >= 0) attrs(temp)
+      else null
+    })
+  }
+
+  /**
+    * Spatial operation knn
+    * Find k nearest neighbor of a given point
+    */
+  def knn(keys: Array[String], point: Array[Double], k: Int): DataFrame = withPlan{
+    val attrs = getAttributes(keys)
+    attrs.foreach(attr => assert(attr != null, "column not found"))
+    Filter(ExpKNN(PointWrapper(attrs),
+      Literal.create(new Point(point), ShapeType),
+      Literal(k)),
+      logicalPlan)
   }
 
   private def aggregatableColumns: Seq[Expression] = {

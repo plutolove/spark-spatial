@@ -23,6 +23,7 @@ import org.apache.spark.sql.catalyst.expressions._
 import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 import org.apache.spark.sql.execution.datasources.{DataSourceStrategy, FileSourceStrategy}
 import org.apache.spark.sql.internal.SQLConf
+import org.apache.spark.sql.spatial.strategys.SpatialFilter
 
 class SparkPlanner(
     val sparkContext: SparkContext,
@@ -34,6 +35,7 @@ class SparkPlanner(
 
   def strategies: Seq[Strategy] =
       extraStrategies ++ (
+        SpatialFilter ::
       FileSourceStrategy ::
       DataSourceStrategy ::
       DDLStrategy ::
