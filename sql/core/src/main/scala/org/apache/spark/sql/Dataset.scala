@@ -51,7 +51,7 @@ import org.apache.spark.sql.types._
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.unsafe.types.CalendarInterval
 import org.apache.spark.util.Utils
-import org.apache.spark.sql.catalyst.spatial.expressions.{ExpKNN, PointWrapper}
+import org.apache.spark.sql.catalyst.spatial.expressions.{ExpKNN, ExpRange, PointWrapper}
 import org.apache.spark.sql.catalyst.spatial.shapes.Point
 
 private[sql] object Dataset {
@@ -248,6 +248,24 @@ class Dataset[T] private[sql](
       Literal.create(new Point(point), ShapeType),
       Literal(k)),
       logicalPlan)
+  }
+
+  /**
+    * Spatial operation range
+    * {{
+    *    point.range(Array("x", "y"), Array(10, 10), Array(20, 20))
+    *    point.filter($"x" >= 10 && $"x" <= 20 && $"y" >= 10 && $"y" <= 20)
+    * }}
+    */
+
+  def range(keys: Array[String], low: Array[Double], high: Array[Double]): DataFrame = withPlan {
+    val attrs = getAttributes(keys)
+    attrs.foreach(attr => assert(attr != null, "cloumn not found"))
+    Filter(ExpRange(PointWrapper(attrs),
+      Literal.create(new Point(low), ShapeType),
+      Literal.create(new Point(high), ShapeType)),
+      logicalPlan
+    )
   }
 
   private def aggregatableColumns: Seq[Expression] = {
