@@ -8,7 +8,7 @@ import org.apache.spark.sql.catalyst.spatial.shapes.Point
 import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.catalyst.spatial.util.ShapeUtil
 import org.apache.spark.sql.catalyst.expressions.SortOrder
-import org.apache.spark.sql.catalyst.spatial.expressions.{ExpKNN}
+import org.apache.spark.sql.catalyst.spatial.expressions.{ExpKNN, ExpRange}
 
 /*
  *   Created by plutolove on 08/02/2018.
@@ -37,7 +37,7 @@ case class SpatialFilterExec(condition: Expression, child: SparkPlan) extends Sp
         val _target = target.asInstanceOf[Literal].value.asInstanceOf[Point]
         val _k = k.value.asInstanceOf[Number].intValue()
         knn(root_rdd, point, _target, _k)
-      case _ =>
+      case ExpRange(_, _, _) =>
         root_rdd.mapPartitions(iter => iter.filter(newPredicate(condition, child.output).eval(_)))
     }
   }
