@@ -8,7 +8,7 @@ import org.apache.spark.sql.catalyst.spatial.shapes.Point
 import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.catalyst.spatial.util.ShapeUtil
 import org.apache.spark.sql.catalyst.expressions.SortOrder
-import org.apache.spark.sql.catalyst.spatial.expressions.{ExpKNN, ExpRange}
+import org.apache.spark.sql.catalyst.spatial.expressions.{ExpKNN}
 
 /*
  *   Created by plutolove on 08/02/2018.
