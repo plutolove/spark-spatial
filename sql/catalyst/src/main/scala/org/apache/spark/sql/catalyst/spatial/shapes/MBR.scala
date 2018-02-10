@@ -37,7 +37,7 @@ case class MBR(low: Point, high: Point) extends Shape {
     point match {
       case p: Point =>
         for (i <- p.coord.indices) {
-          if (p.coord (i) > high.coord (i) || p.coord (i) < high.coord (i) ) return false
+          if (p.coord (i) > high.coord (i) || p.coord (i) < low.coord (i) ) return false
         }
         true
       case _ => false

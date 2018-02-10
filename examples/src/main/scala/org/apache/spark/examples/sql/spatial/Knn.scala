@@ -12,8 +12,7 @@ object Knn {
     val sparkSession = SparkSession
       .builder()
       .master("local[4]")
-      .appName("SparkSessionForSimba")
-      .config("simba.join.partitions", "20")
+      .appName("SparkSession")
       .getOrCreate()
 
     import sparkSession.implicits._

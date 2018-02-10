@@ -1,5 +1,5 @@
 # Apache Spark
-
+[![Build Status](https://travis-ci.org/plutolove/spark-spatial.svg?branch=master)](https://travis-ci.org/plutolove/spark-spatial)
 Spark is a fast and general cluster computing system for Big Data. It provides
 high-level APIs in Scala, Java, Python, and R, and an optimized engine that
 supports general computation graphs for data analysis. It also supports a

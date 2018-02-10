@@ -6,15 +6,14 @@ import org.apache.spark.sql.SparkSession
  *   Created by plutolove on 08/02/2018.
  */
 
-object Knn {
+object Range {
   case class PointData(x: Double, y: Double, z: Double, other: String)
   def main(args: Array[String]): Unit = {
 
     val sparkSession = SparkSession
       .builder()
       .master("local[4]")
-      .appName("SparkSessionForSimba")
-      .config("simba.join.partitions", "20")
+      .appName("SparkSession")
       .getOrCreate()
 
     import sparkSession.implicits._
