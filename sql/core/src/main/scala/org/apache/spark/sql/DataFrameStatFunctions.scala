@@ -50,7 +50,7 @@ final class DataFrameStatFunctions private[sql](df: DataFrame) {
    *
    * This method implements a variation of the Greenwald-Khanna algorithm (with some speed
    * optimizations).
-   * The algorithm was first present in <a href="http://dx.doi.org/10.1145/375663.375670">
+   * The algorithm was first present in <a href="https://doi.org/10.1145/375663.375670">
    * Space-efficient Online Computation of Quantile Summaries</a> by Greenwald and Khanna.
    *
    * @param col the name of the numerical column
@@ -186,7 +186,7 @@ final class DataFrameStatFunctions private[sql](df: DataFrame) {
   /**
    * Finding frequent items for columns, possibly with false positives. Using the
    * frequent element count algorithm described in
-   * <a href="http://dx.doi.org/10.1145/762471.762473">here</a>, proposed by Karp,
+   * <a href="https://doi.org/10.1145/762471.762473">here</a>, proposed by Karp,
    * Schenker, and Papadimitriou.
    * The `support` should be greater than 1e-4.
    *
@@ -233,7 +233,7 @@ final class DataFrameStatFunctions private[sql](df: DataFrame) {
   /**
    * Finding frequent items for columns, possibly with false positives. Using the
    * frequent element count algorithm described in
-   * <a href="http://dx.doi.org/10.1145/762471.762473">here</a>, proposed by Karp,
+   * <a href="https://doi.org/10.1145/762471.762473">here</a>, proposed by Karp,
    * Schenker, and Papadimitriou.
    * Uses a `default` support of 1%.
    *
@@ -252,7 +252,7 @@ final class DataFrameStatFunctions private[sql](df: DataFrame) {
   /**
    * (Scala-specific) Finding frequent items for columns, possibly with false positives. Using the
    * frequent element count algorithm described in
-   * <a href="http://dx.doi.org/10.1145/762471.762473">here</a>, proposed by Karp, Schenker,
+   * <a href="https://doi.org/10.1145/762471.762473">here</a>, proposed by Karp, Schenker,
    * and Papadimitriou.
    *
    * This function is meant for exploratory data analysis, as we make no guarantee about the
@@ -296,7 +296,7 @@ final class DataFrameStatFunctions private[sql](df: DataFrame) {
   /**
    * (Scala-specific) Finding frequent items for columns, possibly with false positives. Using the
    * frequent element count algorithm described in
-   * <a href="http://dx.doi.org/10.1145/762471.762473">here</a>, proposed by Karp, Schenker,
+   * <a href="https://doi.org/10.1145/762471.762473">here</a>, proposed by Karp, Schenker,
    * and Papadimitriou.
    * Uses a `default` support of 1%.
    *
