@@ -49,9 +49,6 @@ install:
 script:
   #- .dev/lint-java
   - export MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m"
-  #- mvn -DskipTests clean package
-  - mvn -pl :spark-catalyst_2.11 -DskipTests clean package
-  - mvn -pl :spark-sql_2.11 clean -DskipTests package
-  - mvn -pl :spark-examples_2.11 -DskipTests clean package
+  - mvn -DskipTests clean package
 
 
