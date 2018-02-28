@@ -25,6 +25,14 @@ case class Point(coord: Array[Double]) extends Shape {
     Math.sqrt(ans)
   }
 
+  override def intersects(other: Shape): Boolean = {
+    other match {
+      case p: Point => p == this
+      case mbr: MBR => mbr.contains(this)
+    }
+  }
+
+
   def ==(other: Point): Boolean = {
     other match {
       case p: Point =>

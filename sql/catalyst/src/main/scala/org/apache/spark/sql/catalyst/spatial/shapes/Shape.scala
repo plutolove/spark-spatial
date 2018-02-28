@@ -12,9 +12,9 @@ abstract class Shape extends Serializable {
   val dimensions: Int
   def minDist(other: Shape): Double
 
-  /*
-  def intersects(other: Shape): Boolean
 
+  def intersects(other: Shape): Boolean
+  /*
   def getMBR: MBR
   */
 }
