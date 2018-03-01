@@ -7,11 +7,11 @@ import scala.util.control.Breaks
 
 /*
  *   Created by plutolove on 28/02/2018.
+ *   The RTree is implemented by Skyprophet from https://github.com/InitialDLab/Simba/blob/master/src/main/scala/org/apache/spark/sql/simba/index/RTree.scala
  */
 
 abstract class RTreeEntry {
   def minDist(x: Shape): Double
-
   def intersects(x: Shape): Boolean
 }
 
@@ -30,7 +30,6 @@ case class RTreeNode(m_mbr: MBR, m_child: Array[RTreeEntry], isLeaf: Boolean) {
     this(m_mbr, children.map(x => RTreeInternalEntry(x._1, x._2)), false)
   }
 
-  // XX Interesting Trick! Overriding same function
   def this(m_mbr: MBR, children: => Array[(Point, Int)]) = {
     this(m_mbr, children.map(x => RTreeLeafEntry(x._1, x._2, 1)), true)
   }
@@ -144,52 +143,6 @@ case class RTree(root: RTreeNode) extends Index with Serializable {
     ans.toArray
   }
 
-  def circleRangeCnt(origin: Shape, r: Double): Array[(Shape, Int, Int)] = {
-    val ans = mutable.ArrayBuffer[(Shape, Int, Int)]()
-    val st = new mutable.Stack[RTreeNode]()
-    if (root.m_mbr.minDist(origin) <= r && root.m_child.nonEmpty) st.push(root)
-    while (st.nonEmpty) {
-      val now = st.pop()
-      if (!now.isLeaf) {
-        now.m_child.foreach{
-          case RTreeInternalEntry(mbr, node) =>
-            if (origin.minDist(mbr) <= r) st.push(node)
-        }
-      } else {
-        now.m_child.foreach {
-          case RTreeLeafEntry(shape, m_data, size) =>
-            if (origin.minDist(shape) <= r) ans += ((shape, m_data, size))
-        }
-      }
-    }
-    ans.toArray
-  }
-
-  def circleRangeConj(queries: Array[(Point, Double)]): Array[(Shape, Int)] = {
-    val ans = mutable.ArrayBuffer[(Shape, Int)]()
-    val st = new mutable.Stack[RTreeNode]()
-
-    def check(now: Shape) : Boolean = {
-      for (i <- queries.indices)
-        if (now.minDist(queries(i)._1) > queries(i)._2) return false
-      true
-    }
-
-    if (check(root.m_mbr) && root.m_child.nonEmpty) st.push(root)
-    while (st.nonEmpty) {
-      val now = st.pop()
-      if (!now.isLeaf) now.m_child.foreach {
-        case RTreeInternalEntry(mbr, node) =>
-          if (check(mbr)) st.push(node)
-      } else {
-        now.m_child.foreach {
-          case RTreeLeafEntry(shape, m_data, _) =>
-            if (check(shape)) ans += ((shape, m_data))
-        }
-      }
-    }
-    ans.toArray
-  }
 
   def kNN(query: Point, k: Int, keepSame: Boolean = false): Array[(Shape, Int)] = {
     val ans = mutable.ArrayBuffer[(Shape, Int)]()
