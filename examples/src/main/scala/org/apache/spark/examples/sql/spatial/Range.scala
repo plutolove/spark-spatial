@@ -32,6 +32,6 @@ object Range {
     datapoints.createOrReplaceTempView("b")
 
     datapoints.createIndex("rtree", "RtreeForData",  Array("x", "y") )
-    datapoints.knn(Array("x", "y"), Array(0.0, 0.0), 3).show(3)
+    datapoints.range(Array("x", "y"), Array(0, 0), Array(10, 10)).show()
   }
 }

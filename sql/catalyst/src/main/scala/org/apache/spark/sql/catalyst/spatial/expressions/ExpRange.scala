@@ -23,7 +23,6 @@ case class ExpRange(shape: Expression, low: Expression, high: Expression) extend
     val high_point = high.asInstanceOf[Literal].value.asInstanceOf[Point]
     require(data.dimensions == low_point.dimensions && low_point.dimensions == high_point.dimensions)
     val mbr = MBR(low_point, high_point)
-    println("eval: ", mbr.contains(data))
     mbr.contains(data)
   }
 }

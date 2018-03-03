@@ -175,6 +175,32 @@ case class RTree(root: RTreeNode) extends Index with Serializable {
     ans.toArray
   }
 
+  def circleRangeConj(queries: Array[(Point, Double)]): Array[(Shape, Int)] = {
+    val ans = mutable.ArrayBuffer[(Shape, Int)]()
+    val st = new mutable.Stack[RTreeNode]()
+
+    def check(now: Shape) : Boolean = {
+      for (i <- queries.indices)
+        if (now.minDist(queries(i)._1) > queries(i)._2) return false
+      true
+    }
+
+    if (check(root.m_mbr) && root.m_child.nonEmpty) st.push(root)
+    while (st.nonEmpty) {
+      val now = st.pop()
+      if (!now.isLeaf) now.m_child.foreach {
+        case RTreeInternalEntry(mbr, node) =>
+          if (check(mbr)) st.push(node)
+      } else {
+        now.m_child.foreach {
+          case RTreeLeafEntry(shape, m_data, _) =>
+            if (check(shape)) ans += ((shape, m_data))
+        }
+      }
+    }
+    ans.toArray
+  }
+
   def kNN(query: Point, distFunc: (Point, MBR) => Double,
           k: Int, keepSame: Boolean): Array[(Shape, Int)] = {
     val ans = mutable.ArrayBuffer[(Shape, Int)]()

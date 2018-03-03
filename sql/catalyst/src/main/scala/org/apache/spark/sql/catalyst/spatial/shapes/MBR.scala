@@ -36,8 +36,17 @@ case class MBR(low: Point, high: Point) extends Shape {
   override def intersects(other: Shape): Boolean = {
     other match {
       case p: Point => p == this
-      case mbr: MBR => mbr.contains(this)
+      case mbr: MBR => intersects(mbr)
     }
+  }
+
+  def intersects(other: MBR): Boolean = {
+    require(low.coord.length == other.low.coord.length)
+    for (i <- low.coord.indices)
+      if (low.coord(i) > other.high.coord(i) || high.coord(i) < other.low.coord(i)) {
+        return false
+      }
+    true
   }
 
   def contains(point: Shape): Boolean = {

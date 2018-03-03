@@ -364,6 +364,7 @@ class SparkSession private(
     Dataset.ofRows(self, LogicalRDD(attributeSeq, rowRdd)(self))
   }
 
+  /*
   def createIndex(tableName: String, indexType: String,
                  indexName: String, column: Array[String]): Unit = {
     val tbl = table(tableName)
@@ -379,7 +380,7 @@ class SparkSession private(
     sessionState.indexManager.createIndex(table(tableName), IndexType(indexType),
       indexName, columnKeys, Some(tableName))
   }
-
+*/
 
 
   /**
