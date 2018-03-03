@@ -10,7 +10,9 @@ import org.apache.spark.storage.StorageLevel
  *   Created by plutolove on 02/03/2018.
  */
 case class RTreeIndexRelation(output: Seq[Attribute], child: SparkPlan, table_name: Option[String],
-                              col_keys: Seq[Attribute], index_name: String)(override var indexRDD_data: IndexRDD = null, var global_rtree: RTree) extends IndexRelation {
+                              col_keys: Seq[Attribute], index_name: String)(var indexRDD_data: IndexRDD = null, var global_rtree: RTree = null) extends IndexRelation {
+
+  //def column_keys: Seq[Attribute] = col_keys
 
   private def check_keys: Boolean = {
     if(col_keys.length > 0) {
@@ -42,7 +44,6 @@ case class RTreeIndexRelation(output: Seq[Attribute], child: SparkPlan, table_na
     })
 
     val (partitionRDD, mbrs) = STRPartition(tmpRDD, dimension, numPartitions, sampleRate, transferThreshold, maxEntriesPerNode)
-
     //create local RTree index for each partition
     val indexedrdd = partitionRDD.mapPartitions{iter =>
       val tmpdata = iter.toArray
@@ -61,6 +62,7 @@ case class RTreeIndexRelation(output: Seq[Attribute], child: SparkPlan, table_na
   }
 
   override def withOutput(new_output: Seq[Attribute]): IndexRelation = {
+    println("---------&&&&&&&&&")
     RTreeIndexRelation(new_output, child, table_name,
       col_keys, index_name)(indexRDD_data, global_rtree)
   }

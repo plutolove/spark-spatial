@@ -53,6 +53,7 @@ import org.apache.spark.unsafe.types.CalendarInterval
 import org.apache.spark.util.Utils
 import org.apache.spark.sql.catalyst.spatial.expressions.{ExpKNN, ExpRange, PointWrapper}
 import org.apache.spark.sql.catalyst.spatial.shapes.Point
+import org.apache.spark.sql.spatial.index.IndexType
 
 private[sql] object Dataset {
   def apply[T: Encoder](sparkSession: SparkSession, logicalPlan: LogicalPlan): Dataset[T] = {
@@ -248,6 +249,12 @@ class Dataset[T] private[sql](
       Literal.create(new Point(point), ShapeType),
       Literal(k)),
       logicalPlan)
+  }
+
+
+  def createIndex(indexType: String, indexName: String, column: Array[String]): this.type = {
+    sparkSession.sessionState.indexManager.createIndex(this, IndexType(indexType), indexName, getAttributes(column).toList)
+    this
   }
 
   /**

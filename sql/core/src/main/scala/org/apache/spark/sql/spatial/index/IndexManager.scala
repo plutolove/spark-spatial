@@ -30,7 +30,7 @@ class IndexManager extends Logging {
   private val indexInfos = new ArrayBuffer[IndexInfo]
 
   def getIndexInfo: Array[IndexInfo] = indexInfos.toArray
-
+  def getIndexData: Array[IndexData] = indexedData.toArray
   private def readLock[A](f: => A): A = {
     val lock = indexLock.readLock()
     lock.lock()
@@ -52,7 +52,9 @@ class IndexManager extends Logging {
   }
 
   def lookupIndexedData(plan: LogicalPlan): Option[IndexData] = readLock {
-    val tmp_res = indexedData.find(cd => plan.sameResult(cd.plan))
+    val tmp_res = indexedData.find{cd =>
+      println(plan+"\n*\n"+cd.plan)
+      plan.sameResult(cd.plan)}
     if (tmp_res.nonEmpty) return tmp_res
     else {
       indexedData.find(cd => {
@@ -90,6 +92,9 @@ class IndexManager extends Logging {
                        storageLevel: StorageLevel = MEMORY_AND_DISK): Unit = {
     writeLock {
       val planToIndex = query.queryExecution.analyzed
+
+      println("plantoindex: "+planToIndex)
+
       if (lookupIndexedData(planToIndex).nonEmpty) {
         println("Index for the data has already been built.")
       } else {
@@ -97,8 +102,11 @@ class IndexManager extends Logging {
           IndexData(indexName, planToIndex,
             IndexRelation(query.queryExecution.executedPlan, tableName,
               indexType, column, indexName))
+
         indexInfos += IndexInfo(tableName.getOrElse("Pluto"), indexName,
           column, indexType, storageLevel)
+
+        println("create index")
       }
     }
   }
@@ -112,7 +120,6 @@ class IndexManager extends Logging {
           .map(_.indexrelation.withOutput(currentFragment.output))
           .getOrElse(currentFragment)
     }
-    //println(tmp)
     tmp
   }
 }

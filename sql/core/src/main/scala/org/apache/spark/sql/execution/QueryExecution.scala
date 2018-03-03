@@ -80,8 +80,8 @@ class QueryExecution(val sparkSession: SparkSession, val logical: LogicalPlan) {
     sparkSession.sessionState.indexManager.useIndexedData(withCachedData)
   }
 
-  //lazy val optimizedPlan: LogicalPlan = sparkSession.sessionState.optimizer.execute(withCachedData)
-  lazy val optimizedPlan: LogicalPlan = sparkSession.sessionState.optimizer.execute(withIndexedData)
+  lazy val optimizedPlan: LogicalPlan = sparkSession.sessionState.optimizer.execute(withCachedData)
+  //lazy val optimizedPlan: LogicalPlan = sparkSession.sessionState.optimizer.execute(withIndexedData)
 
   lazy val sparkPlan: SparkPlan = {
     SparkSession.setActiveSession(sparkSession)

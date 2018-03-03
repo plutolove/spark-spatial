@@ -1,6 +1,8 @@
 package org.apache.spark.examples.sql.spatial
 
 import org.apache.spark.sql.SparkSession
+import scala.util.Random
+import org.apache.log4j.{Logger, Level}
 
 /*
  *   Created by plutolove on 08/02/2018.
@@ -8,6 +10,7 @@ import org.apache.spark.sql.SparkSession
 
 object Range {
   case class PointData(x: Double, y: Double, z: Double, other: String)
+  Logger.getLogger("org").setLevel(Level.WARN)
   def main(args: Array[String]): Unit = {
 
     val sparkSession = SparkSession
@@ -17,10 +20,18 @@ object Range {
       .getOrCreate()
 
     import sparkSession.implicits._
-    val caseClassDS = Seq(PointData(1.0, 1.0, 3.0, "1"),  PointData(2.0, 2.0, 3.0, "2"), PointData(2.0, 2.0, 3.0, "3"),
-      PointData(2.0, 2.0, 3.0, "4"),PointData(3.0, 3.0, 3.0, "5"),PointData(4.0, 4.0, 3.0, "6")).toDS()
-    //caseClassDS.range(Array("x", "y"), Array(0.0, 0.0), Array(3.0, 3.0)).show()
-    caseClassDS.createOrReplaceTempView("person")
-    sparkSession.createIndex("person", "rtree", "rt", Array("x"))
+    var points = Seq[PointData]()
+
+    for(i <- 0 until 300) {
+      points = points :+ PointData(Random.nextInt()%30, Random.nextInt()%30, Random.nextInt()%30, "point: "+i.toString)
+    }
+
+    val datapoints = points.toDS()
+
+
+    datapoints.createOrReplaceTempView("b")
+
+    datapoints.createIndex("rtree", "RtreeForData",  Array("x", "y") )
+    datapoints.knn(Array("x", "y"), Array(0.0, 0.0), 3).show(3)
   }
 }

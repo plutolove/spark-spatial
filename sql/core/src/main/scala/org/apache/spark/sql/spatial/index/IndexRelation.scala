@@ -13,7 +13,7 @@ object IndexRelation {
   def apply(sp: SparkPlan, table_name: Option[String], index_type: IndexType,
             attrs: List[Attribute], index_name: String): IndexRelation = {
     index_type match {
-
+      case RTreeType => RTreeIndexRelation(sp.output, sp, table_name, attrs, index_name)()
       case _ => null
     }
   }
