@@ -1,5 +1,6 @@
 # Apache Spark
 [![Build Status](https://travis-ci.org/plutolove/spark-spatial.svg?branch=master)](https://travis-ci.org/plutolove/spark-spatial)
+
 本项目基于Apache Spark，在Dataset中添加了range和knn查询，同时支持RTree索引，加速range和knn查询。
 ### Usage
 ```scala
