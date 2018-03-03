@@ -1,7 +1,5 @@
 package org.apache.spark.sql.spatial.index.partitioner
 
-import java.awt.Dimension
-
 import org.apache.spark.Partitioner
 import org.apache.spark.rdd.{RDD, ShuffledRDD}
 import org.apache.spark.sql.catalyst.InternalRow
@@ -36,6 +34,7 @@ class STRPartitioner(partition: Int, sample_rate: Double,
                      max_entries_per_node: Int,
                      rdd: RDD[_ <: Product2[Point, Any]]) extends Partitioner {
   case class Bound(min: Array[Double], max: Array[Double])
+
 
   //get RDD max/min bound and the total size
   val (data_bounds, total_size) = {

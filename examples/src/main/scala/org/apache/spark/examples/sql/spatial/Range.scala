@@ -19,6 +19,8 @@ object Range {
     import sparkSession.implicits._
     val caseClassDS = Seq(PointData(1.0, 1.0, 3.0, "1"),  PointData(2.0, 2.0, 3.0, "2"), PointData(2.0, 2.0, 3.0, "3"),
       PointData(2.0, 2.0, 3.0, "4"),PointData(3.0, 3.0, 3.0, "5"),PointData(4.0, 4.0, 3.0, "6")).toDS()
-    caseClassDS.range(Array("x", "y"), Array(0.0, 0.0), Array(3.0, 3.0)).show()
+    //caseClassDS.range(Array("x", "y"), Array(0.0, 0.0), Array(3.0, 3.0)).show()
+    caseClassDS.createOrReplaceTempView("person")
+    sparkSession.createIndex("person", "rtree", "rt", Array("x"))
   }
 }

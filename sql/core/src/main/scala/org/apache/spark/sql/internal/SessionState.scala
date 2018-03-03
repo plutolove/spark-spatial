@@ -21,7 +21,6 @@ import java.io.File
 
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
-
 import org.apache.spark.sql._
 import org.apache.spark.sql.catalyst.TableIdentifier
 import org.apache.spark.sql.catalyst.analysis.{Analyzer, FunctionRegistry}
@@ -32,6 +31,7 @@ import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 import org.apache.spark.sql.execution._
 import org.apache.spark.sql.execution.command.AnalyzeTableCommand
 import org.apache.spark.sql.execution.datasources._
+import org.apache.spark.sql.spatial.index.IndexManager
 import org.apache.spark.sql.streaming.{StreamingQuery, StreamingQueryManager}
 import org.apache.spark.sql.util.ExecutionListenerManager
 
@@ -47,6 +47,9 @@ private[sql] class SessionState(sparkSession: SparkSession) {
   /**
    * SQL-specific key-value configurations.
    */
+
+  val indexManager: IndexManager = new IndexManager
+
   lazy val conf: SQLConf = new SQLConf
 
   def newHadoopConf(): Configuration = {

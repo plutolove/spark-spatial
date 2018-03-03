@@ -6,7 +6,6 @@ import org.apache.spark.sql.catalyst.spatial.shapes.{Point, Shape}
 import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.catalyst.expressions.{Attribute, BindReferences, Expression, UnsafeArrayData}
 
-
 /*
  *   Created by plutolove on 08/02/2018.
  */

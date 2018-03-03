@@ -20,12 +20,13 @@ package org.apache.spark.sql
 import java.beans.Introspector
 import java.io.Closeable
 import java.util.concurrent.atomic.AtomicReference
+import org.apache.spark.sql.catalyst.expressions.Attribute
+
 
 import scala.collection.JavaConverters._
 import scala.reflect.ClassTag
 import scala.reflect.runtime.universe.TypeTag
 import scala.util.control.NonFatal
-
 import org.apache.spark.{SPARK_VERSION, SparkConf, SparkContext}
 import org.apache.spark.annotation.{DeveloperApi, Experimental, InterfaceStability}
 import org.apache.spark.api.java.JavaRDD
@@ -43,6 +44,7 @@ import org.apache.spark.sql.execution.ui.SQLListener
 import org.apache.spark.sql.internal.{CatalogImpl, SessionState, SharedState}
 import org.apache.spark.sql.internal.StaticSQLConf.CATALOG_IMPLEMENTATION
 import org.apache.spark.sql.sources.BaseRelation
+import org.apache.spark.sql.spatial.index.IndexType
 import org.apache.spark.sql.streaming._
 import org.apache.spark.sql.types.{DataType, LongType, StructType}
 import org.apache.spark.sql.util.ExecutionListenerManager
@@ -361,6 +363,24 @@ class SparkSession private(
     }
     Dataset.ofRows(self, LogicalRDD(attributeSeq, rowRdd)(self))
   }
+
+  def createIndex(tableName: String, indexType: String,
+                 indexName: String, column: Array[String]): Unit = {
+    val tbl = table(tableName)
+    assert(tbl != null, "Table not found")
+    val attrs = tbl.queryExecution.analyzed.output
+    val columnKeys = column.map(attr => {
+      var ans: Attribute = null
+      for (i <- attrs.indices)
+        if (attrs(i).name.equals(attr)) ans = attrs(i)
+      assert(ans != null, "Attribute not found")
+      ans
+    }).toList
+    sessionState.indexManager.createIndex(table(tableName), IndexType(indexType),
+      indexName, columnKeys, Some(tableName))
+  }
+
+
 
   /**
    * Applies a schema to an RDD of Java Beans.

@@ -641,6 +641,18 @@ object SQLConf {
     .booleanConf
     .createWithDefault(false)
 
+  val Index_Partitions = SQLConfigBuilder("spark.sql.IndexPartitions").internal()
+    .intConf.createWithDefault(200)
+
+  val Rtree_MaxEntriesPerNode = SQLConfigBuilder("spark.sql.RtreeMaxEntriesPerNOde").internal()
+    .intConf.createWithDefault(25)
+
+  val Sample_Rate = SQLConfigBuilder("spark.sql.SampleRate").internal()
+    .doubleConf.createWithDefault(0.01)
+
+  val Transfer_Threshold = SQLConfigBuilder("spark.sql.TransferThreshold").internal()
+    .longConf.createWithDefault(800 * 1024 * 1024)
+
   object Deprecated {
     val MAPRED_REDUCE_TASKS = "mapred.reduce.tasks"
   }
@@ -665,6 +677,14 @@ class SQLConf extends Serializable with Logging {
   @transient private val reader = new ConfigReader(settings)
 
   /** ************************ Spark SQL Params/Hints ******************* */
+
+  def indexPsrtitions: Int = getConf(Index_Partitions)
+
+  def maxEntriesPerNode: Int = getConf(Rtree_MaxEntriesPerNode)
+
+  def sampleRate: Double = getConf(Sample_Rate)
+
+  def transfer_Threshold: Long = getConf(Transfer_Threshold)
 
   def optimizerMaxIterations: Int = getConf(OPTIMIZER_MAX_ITERATIONS)
 
