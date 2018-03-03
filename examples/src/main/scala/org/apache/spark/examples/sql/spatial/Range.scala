@@ -22,15 +22,11 @@ object Range {
     import sparkSession.implicits._
     var points = Seq[PointData]()
 
-    for(i <- 0 until 300) {
+    for(i <- 0 until 3000) {
       points = points :+ PointData(Random.nextInt()%30, Random.nextInt()%30, Random.nextInt()%30, "point: "+i.toString)
     }
-
     val datapoints = points.toDS()
-
-
     datapoints.createOrReplaceTempView("b")
-
     datapoints.createIndex("rtree", "RtreeForData",  Array("x", "y") )
     datapoints.range(Array("x", "y"), Array(0, 0), Array(10, 10)).show()
   }
