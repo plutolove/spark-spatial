@@ -144,7 +144,7 @@ class STRPartitioner(est_partition: Int,
   //println(est_partition+"----------------"+numPartitions+"--------------"+dimension)
   val rt = RTree(mbrBound.map(x => (x._1, x._2, 1)), max_entries_per_node)
 
-  def getPartition(key: Any): Int = {
+  override def getPartition(key: Any): Int = {
     val k = key.asInstanceOf[Point]
     rt.circleRange(k, 0.0).head._2
   }

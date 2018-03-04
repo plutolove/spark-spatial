@@ -117,7 +117,6 @@ case class SpatialFilterExec(condition: Expression, child: SparkPlan, lp: Logica
               val root_mbr = index.root.m_mbr
               val perfect_cover = query_mbr.contains(root_mbr.low) &&
                 query_mbr.contains(root_mbr.high)
-
               if(perfect_cover) {
                 datas.data
               } else {
