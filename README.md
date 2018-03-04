@@ -4,7 +4,7 @@
 本项目基于Apache Spark，在Dataset中添加了range和knn查询，同时支持RTree索引，加速range和knn查询。
 ### Develop Note
 * [Add your own query operation in spark](http://plutolove.hatenablog.com/entry/2018/02/27/171804)
-### Usage
+### Example
 ```scala
 import org.apache.spark.sql.SparkSession
 import scala.util.Random
