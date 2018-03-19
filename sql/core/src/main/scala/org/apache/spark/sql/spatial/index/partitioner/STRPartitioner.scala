@@ -64,9 +64,9 @@ class STRPartitioner(est_partition: Int,
       })
     }
 
-    data_bounds.min.foreach(item => print(s"${item} , "))
+    //data_bounds.min.foreach(item => print(s"${item} , "))
     //println("")
-    data_bounds.max.foreach(item => print(s"${item}, "))
+    //data_bounds.max.foreach(item => print(s"${item}, "))
     //println("")
 
     val seed = System.currentTimeMillis()
