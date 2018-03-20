@@ -31,6 +31,13 @@ object STRPartition {
   }
 }
 
+/*
+排序-拼贴-递归：Sort-Tile-Recursive (STR):X轴最近原则的另一种变体，先估算需要的叶子
+节点数：l=ceil(对象数量/节点容量)和每个维度上需要分割的份数： s=l^{1/d}\rceil。然后
+依次把每个维度分为s等分。分割之后如果有哪一份的数据超过了条目上限就使用相同的方法继续等分。
+如果是点数据，叶子节点间不会重叠。算法会拼接一些数据块，使得所有叶子节点的数据量大致相当。
+ */
+
 class STRPartitioner(est_partition: Int,
                      sample_rate: Double,
                      dimension: Int,
@@ -92,6 +99,9 @@ class STRPartitioner(est_partition: Int,
       val len = entries.length
       val grouped = entries.sortWith(_.coord(cur_dim) < _.coord(cur_dim))
         .grouped(Math.ceil(len * 1.0 / dim(cur_dim)).toInt).toArray
+
+      println(len+"\t\t"+grouped.length)
+
       var ans = mutable.ArrayBuffer[MBR]()
       if (cur_dim < until_dim) {
         for (i <- grouped.indices) {
